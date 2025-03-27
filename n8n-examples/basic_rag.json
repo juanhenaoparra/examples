@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -160,
-        -1060
+        180,
+        140
       ],
       "id": "f4315abf-94dc-4dfa-97cb-5979776ab881",
       "name": "When clicking ‘Test workflow’"
@@ -26,13 +26,12 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1,
       "position": [
-        660,
-        -1060
+        1000,
+        140
       ],
       "id": "223f8b17-5bac-4598-b4f8-6572f74d36e5",
       "name": "Supabase Vector Store",
       "credentials": {
-        
       }
     },
     {
@@ -43,8 +42,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        280,
-        -1060
+        620,
+        140
       ],
       "id": "1f25071c-1bf7-4adf-b02f-3954ec1035f9",
       "name": "get_file"
@@ -56,13 +55,12 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.1,
       "position": [
-        560,
-        -660
+        900,
+        540
       ],
       "id": "2ed582a3-ca50-48d3-be9f-7d7df5540c56",
       "name": "Embeddings OpenAI",
       "credentials": {
-        
       }
     },
     {
@@ -72,8 +70,8 @@
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "typeVersion": 1,
       "position": [
-        820,
-        -800
+        1160,
+        400
       ],
       "id": "f5f214ed-f583-4f01-bbe3-10d591710ddb",
       "name": "Default Data Loader"
@@ -87,27 +85,11 @@
       "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
       "typeVersion": 1,
       "position": [
-        900,
-        -620
+        1240,
+        580
       ],
       "id": "e89e51de-bbda-4cd6-b5c5-16901c11a59e",
       "name": "Recursive Character Text Splitter"
-    },
-    {
-      "parameters": {
-        "content": "# Indexación de notas de voz",
-        "height": 1020,
-        "width": 1840,
-        "color": 2
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -460,
-        20
-      ],
-      "typeVersion": 1,
-      "id": "ee98f836-a7b9-4e00-ab23-6e13fbe897c4",
-      "name": "Sticky Note"
     },
     {
       "parameters": {
@@ -123,7 +105,6 @@
       "id": "95c0773f-3fa8-4c3d-8b60-e65540fc79d9",
       "name": "OpenAI Chat Model",
       "credentials": {
-        
       }
     },
     {
@@ -147,7 +128,6 @@
       "id": "dc021e48-7c6c-4425-9e46-3d8e730ea9ec",
       "name": "Supabase Vector Store1",
       "credentials": {
-        
       }
     },
     {
@@ -163,7 +143,6 @@
       "id": "186568a3-c832-477b-932f-4615d5b2f1b0",
       "name": "Embeddings OpenAI1",
       "credentials": {
-        
       }
     },
     {
@@ -181,18 +160,17 @@
       "id": "11c87c2b-5d03-4333-af5c-c8c0bca1fdfe",
       "name": "Telegram",
       "credentials": {
-        
       }
     },
     {
       "parameters": {
         "content": "# RAG",
         "height": 920,
-        "width": 1560
+        "width": 1660
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        120,
+        20,
         1080
       ],
       "typeVersion": 1,
@@ -235,171 +213,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "80803d5a-fa49-4341-9bf7-857fdf6b0b17",
-              "leftValue": "={{ $json.message.voice.file_id }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            },
-            {
-              "id": "c3391c88-3f05-4930-9f81-b8d9b8a8ffbd",
-              "leftValue": "={{ $json.message.audio.file_id }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -120,
-        300
-      ],
-      "id": "995d4d57-b54f-401a-86b4-b7f9b926082a",
-      "name": "If1"
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "fileId": "={{ $json.message.voice?.file_id ? $json.message.voice.file_id : $json.message.audio.file_id }}"
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        240,
-        280
-      ],
-      "id": "b93b2f69-b3ed-474e-bd99-c0ca1e98ceb8",
-      "name": "Telegram1",
-      "credentials": {
-        
-      }
-    },
-    {
-      "parameters": {
-        "resource": "audio",
-        "operation": "transcribe",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        540,
-        280
-      ],
-      "id": "721e6a23-f841-48a8-b465-829b8d46943f",
-      "name": "OpenAI",
-      "credentials": {
-        
-      }
-    },
-    {
-      "parameters": {
-        "mode": "insert",
-        "tableName": {
-          "__rl": true,
-          "value": "documentos_rag",
-          "mode": "list",
-          "cachedResultName": "documentos_rag"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
-      "typeVersion": 1,
-      "position": [
-        860,
-        280
-      ],
-      "id": "cd2a65ee-5a56-4dba-b55b-6bb180fc8ff3",
-      "name": "Supabase Vector Store2",
-      "credentials": {
-        
-      }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
-      "typeVersion": 1.1,
-      "position": [
-        820,
-        540
-      ],
-      "id": "b44ecc69-1c54-40da-babd-c7a0c6bc42d3",
-      "name": "Embeddings OpenAI2",
-      "credentials": {
-        
-      }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
-      "typeVersion": 1,
-      "position": [
-        1020,
-        580
-      ],
-      "id": "3e7c3274-9694-4362-a9be-3f706c598440",
-      "name": "Default Data Loader1"
-    },
-    {
-      "parameters": {
-        "chunkOverlap": 100,
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
-      "typeVersion": 1,
-      "position": [
-        1020,
-        800
-      ],
-      "id": "870f1bc0-3026-4adf-99d9-7a3bdff5299c",
-      "name": "Recursive Character Text Splitter1"
-    },
-    {
-      "parameters": {
-        "updates": [
-          "message"
-        ],
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        -380,
-        300
-      ],
-      "id": "295d7193-ab77-4bea-8b8c-00a87801f9d4",
-      "name": "Telegram Trigger",
-      "webhookId": "76701c15-0022-43c4-bef5-f57cef03f947",
-      "credentials": {
-        
-      }
-    },
-    {
-      "parameters": {
         "promptType": "define",
         "text": "={{ $json.message.text }}",
         "options": {}
@@ -433,43 +246,34 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -260,
-        -1140
+        80,
+        60
       ],
       "typeVersion": 1,
       "id": "cfa60547-6e1c-4391-9f75-57bee0ba4cc1",
       "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        1160
+      ],
+      "id": "295d7193-ab77-4bea-8b8c-00a87801f9d4",
+      "name": "Telegram Trigger",
+      "webhookId": "76701c15-0022-43c4-bef5-f57cef03f947",
+      "credentials": {
+      }
     }
   ],
-  "pinData": {
-    "Telegram Trigger": [
-      {
-        "json": {
-          "update_id": 755139413,
-          "message": {
-            "message_id": 403,
-            "from": {
-              "id": 1397552673,
-              "is_bot": false,
-              "first_name": "Juan Sebastián",
-              "last_name": "Henao",
-              "username": "juanhenaoparra",
-              "language_code": "en"
-            },
-            "chat": {
-              "id": 1397552673,
-              "first_name": "Juan Sebastián",
-              "last_name": "Henao",
-              "username": "juanhenaoparra",
-              "type": "private"
-            },
-            "date": 1742937021,
-            "text": "que fue lo que dije en la ultima reunion? que fue lo que enseñe?"
-          }
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -570,90 +374,6 @@
         ]
       ]
     },
-    "If1": {
-      "main": [
-        [
-          {
-            "node": "Telegram1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Telegram1": {
-      "main": [
-        [
-          {
-            "node": "OpenAI",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Embeddings OpenAI2": {
-      "ai_embedding": [
-        [
-          {
-            "node": "Supabase Vector Store2",
-            "type": "ai_embedding",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Default Data Loader1": {
-      "ai_document": [
-        [
-          {
-            "node": "Supabase Vector Store2",
-            "type": "ai_document",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Recursive Character Text Splitter1": {
-      "ai_textSplitter": [
-        [
-          {
-            "node": "Default Data Loader1",
-            "type": "ai_textSplitter",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI": {
-      "main": [
-        [
-          {
-            "node": "Supabase Vector Store2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Telegram Trigger": {
-      "main": [
-        [
-          {
-            "node": "If1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Question and Answer Chain": {
       "main": [
         [
@@ -675,13 +395,24 @@
           }
         ]
       ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1b828b62-4eb2-43a9-96ea-378c1fab78f0",
+  "versionId": "bfcd56a5-4e00-43b4-88e5-c687a3770980",
   "meta": {
     "instanceId": "1cc235f1c9b2947a06de422747cf2a63fb57c4dec8158f8ecda660fd17da62d4"
   },
