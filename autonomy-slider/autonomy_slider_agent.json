@@ -1,0 +1,293 @@
+{
+  "name": "autonomy_slider_agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "9eeb5a2f-3b64-4dc9-a231-23d54376362a",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -40
+      ],
+      "id": "7692f903-4e6b-41be-9ee5-0b9bc363545e",
+      "name": "Webhook",
+      "webhookId": "9eeb5a2f-3b64-4dc9-a231-23d54376362a"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a399e0f4-d905-42f7-a638-6806bd6392f8",
+              "name": "chatInput",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "8d080638-2b5a-4997-93f5-9c407344323e",
+              "name": "mode",
+              "value": "={{ $json.body.mode }}",
+              "type": "number"
+            },
+            {
+              "id": "4cc48782-b1f8-4dd9-a699-62110d093710",
+              "name": "config",
+              "value": "={{ $json.body.config }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -40,
+        -40
+      ],
+      "id": "65a1b92c-234d-4ebd-b940-43fa23601b31",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const modes_objectives = [\n  \"To help the user know their audience. You can use tools to fetch and know the audience.\",\n  \"To help the user to know the audience and prepare messages for the top profiles. You can use tools to fetch and know the audience.\",\n  \"To help the user to know the audience and send messages for the top profiles. You can use tools to fetch and know the audience and also to send messages.\"\n]\n\nconst allowed_tools = [\n  ['get_top_fans', 'get_profile_data'],\n  ['get_top_fans', 'get_profile_data'],\n  ['get_top_fans', 'get_profile_data', 'send_message']\n]\n\nfor (const item of $input.all()) {\n  let mode =  item.json.mode;\n\n  if (mode > 2) {\n    if (mode == 50) {\n      mode = 1\n    }\n\n    if (mode == 100) {\n      mode = 2\n    }\n  }\n\n  item.json.objective = modes_objectives[mode];\n  item.json.tools_allowed = allowed_tools[mode];\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        -40
+      ],
+      "id": "b24de5ca-038d-4595-9767-786311024c5c",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# Role\n\nYou are an outreach assistant. The social media is linkedin. \n\n# Objective\n\n{{ $json.objective }}\n\n# Restrictions\n\n1. By default use Spanish language.\n2. If the answer contains profiles, ensure to always include the name and the linkedin profile url. To keep traceability.\n\n# Human configuration\n\n{{ $json.config.system_prompt }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        460,
+        -40
+      ],
+      "id": "6fb3ab10-7496-4746-834b-feb12937dc85",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        420,
+        180
+      ],
+      "id": "424ad163-6f28-4a4c-b03e-904b6b13fffd",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "uIbqBltw6s0HR5kI",
+          "name": "OpenAi Valentina Clase4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.config.session_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        180
+      ],
+      "id": "66d5e276-21b0-4a31-87d4-3e136fa50958",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "https://truora.app.n8n.cloud/mcp/dummy",
+        "include": "selected",
+        "includeTools": "={{ $json.tools_allowed }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        720,
+        180
+      ],
+      "id": "3a318d8c-d18d-4b2e-b484-284d58e8a2a4",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        920,
+        -40
+      ],
+      "id": "5de09a89-9e68-4948-b340-6cacb481aef0",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "truora.app.n8n.cloud",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+            "content-length": "175",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "accept-language": "es,es-ES;q=0.9",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "2800:e2:900:c7c:25f0:7127:5665:e470",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "CO",
+            "cf-ray": "955fe63a16aadd2d-MIA",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "origin": "https://6adf73ff-6ff0-4b49-90c4-1a3a08707d16.lovableproject.com",
+            "priority": "u=1, i",
+            "referer": "https://6adf73ff-6ff0-4b49-90c4-1a3a08707d16.lovableproject.com/",
+            "sec-ch-ua": "\"Google Chrome\";v=\"137\", \"Chromium\";v=\"137\", \"Not/A)Brand\";v=\"24\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "x-forwarded-for": "2800:e2:900:c7c:25f0:7127:5665:e470, 172.68.7.141",
+            "x-forwarded-host": "truora.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-9-7bb7d4c57c-8ggrt",
+            "x-is-trusted": "yes",
+            "x-real-ip": "2800:e2:900:c7c:25f0:7127:5665:e470"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "message": "hola",
+            "mode": 0,
+            "config": {
+              "system_prompt": "Be helpful, creative, and provide actionable insights for community outreach and engagement.",
+              "session_id": "w5ywztyql4"
+            }
+          },
+          "webhookUrl": "https://truora.app.n8n.cloud/webhook/9eeb5a2f-3b64-4dc9-a231-23d54376362a",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2fc9c782-120a-4fa3-8d4a-4589930c58aa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1cc235f1c9b2947a06de422747cf2a63fb57c4dec8158f8ecda660fd17da62d4"
+  },
+  "id": "B5qaGFSOUKxdoRNz",
+  "tags": []
+}

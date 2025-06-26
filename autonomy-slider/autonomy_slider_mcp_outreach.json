@@ -1,0 +1,183 @@
+{
+  "name": "autonomy_slider_mcp_outreach",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "995faefb-1a33-4b50-9161-a483622cb8ab"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -120
+      ],
+      "id": "17659048-6fbe-4666-b1ac-b0e0e297f64d",
+      "name": "MCP Server Trigger",
+      "webhookId": "995faefb-1a33-4b50-9161-a483622cb8ab"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Send a message to the provided linkedin profile url",
+        "method": "POST",
+        "url": "https://api.captaindata.co/v3/workflows/dummy/schedule",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "x-api-key dummy"
+            },
+            {
+              "name": "x-project-id",
+              "value": "dummy"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"steps\": [\n    {\n      \"accounts\": [\n        \"dummy\"\n      ],\n      \"parameters\": {\n        \"message\": \"{{ $fromAI('message_to_send', 'The personalized message to send') }}\",\n        \"check_reply\": false\n      },\n      \"output_column\": null,\n      \"accounts_rotation_enabled\": false,\n      \"step_uid\": \"b1fcd184-64d1-4c78-af80-7ee152c2901c\"\n    }\n  ],\n  \"unstructure_meta\": false,\n  \"inputs\": [\n    {\n      \"sales_navigator_profile_id\": null,\n      \"linkedin_profile_url\": \"{{ $fromAI('linkedin_profile_url', 'The linkedin profile url. Example: https://linkedin.com/in/username') }}\"\n    }\n  ],\n  \"job_name\": \"automated-message\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        140
+      ],
+      "id": "b4cf77c6-e5b8-4b76-bf33-91d4fb2bc499",
+      "name": "send_message"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Retrieves the top fans data based on the amount of interactions",
+        "url": "https://cxwdoboqnrmiipmjrrfp.supabase.co/rest/v1/rpc/get_top_interactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "=limit_count",
+              "value": "={{ $fromAI('limit', `the limit of rows, by default set 10`, 'number') }}"
+            },
+            {
+              "name": "offset_count",
+              "value": "={{ $fromAI('offset', `the offset of rows`, 'number') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "dummy"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer dummy"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        380,
+        140
+      ],
+      "id": "ccc5e0cb-e90f-4724-af59-7c7324ed13b8",
+      "name": "get_top_fans"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Retrieves all the data from a specified profile_url",
+        "url": "https://cxwdoboqnrmiipmjrrfp.supabase.co/rest/v1/interactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "=interactor_profile_url",
+              "value": "=eq.{{ $fromAI('profile_url', `the complete linkeidn url of a profile`).trim().replace(/\\/$/, '') }}"
+            },
+            {
+              "name": "limit",
+              "value": "=1"
+            },
+            {
+              "name": "select",
+              "value": "interactor_name,interactor_job_title,interactor_headline,interactor_profile_url,interactor_description,interactor_location,interactor_country"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "dummy"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer dummy"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        140
+      ],
+      "id": "34f74f60-ff4c-475b-910f-a1fe14aa891d",
+      "name": "get_profile_data"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "send_message": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_top_fans": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_profile_data": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1b3d7299-1ebf-468f-8f1b-b13969015497",
+  "meta": {
+    "instanceId": "1cc235f1c9b2947a06de422747cf2a63fb57c4dec8158f8ecda660fd17da62d4"
+  },
+  "id": "gZw7a2Pe887eb5SC",
+  "tags": []
+}
